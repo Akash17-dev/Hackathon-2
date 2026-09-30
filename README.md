@@ -1,8 +1,23 @@
 # Campaign Desk
 
-A local marketing agent that turns one product brief into editable LinkedIn, Instagram, Facebook, and YouTube drafts.
+Multi-platform marketing content agent for a hackathon. One product brief becomes separate drafts for LinkedIn, Instagram, Facebook, and YouTube. You can edit each draft, then simulate approve-and-publish. Nothing is posted to a real social account.
 
-## Run
+## What it does
+
+- Takes a product name, target audience, campaign objective, key benefits, and tone.
+- Writes platform-specific copy, hashtags or tags, a call to action, and an image or video prompt.
+- Lets a person review and edit before publish.
+- Saves campaign history in MongoDB.
+
+Copy is requested from Gemini, then Grok. If both are missing or fail, a built-in generator still fills all four platforms.
+
+## Stack
+
+- Next.js 15 (App Router), React 19, TypeScript
+- MongoDB Atlas
+- Deployed on Vercel
+
+## Run locally
 
 ```bash
 npm install
@@ -12,21 +27,11 @@ npm run dev
 
 Open http://localhost:3000.
 
-## Keys
+Fill `.env` from the variable list below. `.env` is gitignored.
 
-Generation order:
+## Environment variables
 
-1. `GEMINI_API_KEY` (model `GEMINI_MODEL`, default `gemini-2.5-flash`)
-2. `XAI_API_KEY` for Grok (model `XAI_MODEL`, default `grok-3`)
-3. Built-in studio generator if both are missing or fail
-
-`.env` is gitignored. Do not commit keys.
-
-Approve and publish is simulated. Campaigns are stored in MongoDB (`MONGODB_URI`, database `MONGODB_DB`). Locally, campaigns still in `data/campaigns.json` are inserted into that database when missing. On Vercel the JSON file is not used.
-
-## Deploy on Vercel
-
-Import this repo. Framework preset is Next.js. In Project Settings → Environment Variables, add:
+Set these in `.env` locally and in Vercel under Project Settings → Environment Variables. Do not prefix them with `NEXT_PUBLIC_`.
 
 | Name | Required | Notes |
 | --- | --- | --- |
@@ -37,4 +42,8 @@ Import this repo. Framework preset is Next.js. In Project Settings → Environme
 | `XAI_API_KEY` | no | Grok, used if Gemini fails |
 | `XAI_MODEL` | no | Defaults to `grok-3` |
 
-Copy the values from your local `.env`. Do not prefix them with `NEXT_PUBLIC_`. In Atlas → Network Access, allow `0.0.0.0/0` so Vercel’s changing addresses can connect.
+In Atlas → Network Access, allow `0.0.0.0/0` so Vercel can connect.
+
+## Deploy
+
+Import the repo into Vercel and choose the Next.js preset. Add the environment variables, then deploy. On Vercel, campaigns are stored only in MongoDB.
